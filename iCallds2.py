@@ -1,14 +1,12 @@
 # data initialization and get data from direction
-
 import os, sys, dgl, pickle, random
 import torch as th
-
 from dgl.data import DGLDataset
 
 
 class iCallds2(DGLDataset):
-    directory = '/home/isec/Documents/experiment_6/graph_dir_30' ##"E:\\iCallds
-    numgraph = 503
+    directory = '/home/isec/Documents/differentopdata/Reorganized_Dataset/zenodo/graph/graph_dir_70_random' ##"E:\\iCallds
+    numgraph = 1507
     revedge = True
     calledges = True
     laplacian_pe = True
@@ -68,6 +66,7 @@ class iCallds2(DGLDataset):
 
         fcalllist = {}
         calllist = {}
+
         '''
         for i in range(len(glist[0].edges(etype='GT_edges')[0])):
             if glist[0].edges(etype='GT_edges')[0][i].item() not in calllist:
@@ -79,28 +78,29 @@ class iCallds2(DGLDataset):
         for i in range(len(glabel['GT_label'][0])):
             if glabel['GT_label'][0][i].item() not in calllist:
                 calllist[glabel['GT_label'][0][i].item()] = []
-                fcalllist[glabel['GT_label'][0][i].item()] = []
             calllist[glabel['GT_label'][0][i].item()].append(glabel['GT_label'][1][i].item())
 
         funcaddrs = list(savefunc.values())
+        limit = glist[0].num_nodes("code")
+        funcaddrs = [num for num in funcaddrs if num < limit]
+
+
         #GT_F_edges = []
         GT_F_edges_s = []
         GT_F_edges_d = []
+        funcaddrs_sum = list(set(val for values in calllist.values() for val in values)) # added 11/09/2024
+        old_funcaddrs = funcaddrs.copy()
         for key, value in calllist.items():
+            funcaddrs = [item for item in funcaddrs_sum if item not in value] #added for debuging 11/09/2024
             for _ in range(len(value)):
+                if not funcaddrs:
+                    funcaddrs = old_funcaddrs
+                if not old_funcaddrs:
+                    break
                 r = random.choice(funcaddrs)
-                maxtry = 0
-                while True:
-                    if maxtry > 20:
-                        break
-                    elif r in calllist[key] or r in fcalllist[key]:
-                        r = random.choice(funcaddrs)
-                        maxtry += 1
-                    else:
-                        fcalllist[key].append(r)
-                        GT_F_edges_s.append(key)
-                        GT_F_edges_d.append(r)
-                        break
+                funcaddrs.remove(r)
+                GT_F_edges_s.append(key)
+                GT_F_edges_d.append(r)
 
         if not self.calledges:
             tmp = glist[0].edges(etype='codecall_edges')

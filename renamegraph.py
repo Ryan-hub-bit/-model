@@ -16,9 +16,9 @@ import random
 #     return new_path
 
 # Example usage
-source_folder = "/home/isec/Documents/differentopdata/Reorganized_Dataset/graph_dir_80"
-destination_folder = "/home/isec/Documents/differentopdata/Reorganized_Dataset/graph_dir_80_random"
-numbers = list(range(0, 708))
+source_folder = "/home/isec/Documents/differentopdata/Reorganized_Dataset/graph_dir_90"
+destination_folder = "/home/isec/Documents/differentopdata/Reorganized_Dataset/graph_dir_90_random"
+numbers = list(range(0, 1531))
 random.shuffle(numbers)
 print(numbers)
 j = 0

@@ -36,11 +36,11 @@ jsonex='.tgcfi.json' #.ifcc.json
 # graphdir = "/home/isec/Documents/experiment_6/graph_dir_70"
 # addrdir = "/home/isec/Documents/experiment_6/address_dir"
 
-directory = "/home/isec/Documents/differentopdata/Reorganized_Dataset/O1/"
-binary_dir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/O1/valid_binary_list"
-json_dir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/O1/valid_json_list"
-txt_dir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/O1/TEXT_FILES"
-graphdir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/O1/graph_dir_70"
+directory = "/home/isec/Documents/differentopdata/Reorganized_Dataset/"
+binary_dir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/test_binary_list"
+json_dir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/valid_json_list"
+txt_dir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/TEXT_FILES"
+graphdir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/graph_dir_test"
 # graphdir = "/home/isec/Documents/experiment_6/graph_dir_60"
 addrdir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/addr_dir"
 onlyCount = False #True#
@@ -146,6 +146,7 @@ mlog = open(os.path.join(directory, "output.log"),'w')
                     # hack one?
                     #project = "E:\\Research\\binaries\\bzar\\pandora-configbutton-pndman\\"
                     #binaries = '00701f351379817fb432a18c4188b58fdd7180845948d1667a056a7ef773c4c8.tgcfi.json'
+starttime = time.time()
 for root, dirs, jsonfiles in os.walk(json_dir):
     for binaries in jsonfiles:
         jsonfile = os.path.join(root, binaries)
@@ -491,7 +492,6 @@ for root, dirs, jsonfiles in os.walk(json_dir):
 
             #g_list.append(g)
             savebin(filemd5=binaries[:-len(jsonex)], g=g,GT_edges=GT_edges,funcsave=funcsave)
-            print("Processed:", processed, time.time()-binstarttime, binfile)
 
 
 #dgl.data.utils.save_graphs(os.path.join(directory, "data.bin"), g_list)

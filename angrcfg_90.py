@@ -40,7 +40,7 @@ directory = "/home/isec/Documents/differentopdata/Reorganized_Dataset/"
 binary_dir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/valid_binary_list"
 json_dir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/valid_json_list"
 txt_dir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/TEXT_FILES"
-graphdir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/graph_dir_50"
+graphdir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/graph_dir_90"
 addrdir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/addr_dir"
 onlyCount = False #True#
 
@@ -49,7 +49,7 @@ datanodeid = 0
 funcnodeid = 0
 addr_min = 0xffffffff
 addr_max = 0
-Ninst_addrs = 50 # 70 80 ? #basic blcok  first nth instruction (vectors)
+Ninst_addrs = 90 # 70 80 ? #basic blcok  first nth instruction (vectors)
 g_list = []
 asmdict = {}
 naming = 0
@@ -127,6 +127,7 @@ processed = 0
 icalls = 0
 icallsite = 0
 starttime=time.time()
+mlog = open(os.path.join(directory, "output.log"),'w')
 for root, dirs, jsonfiles in os.walk(json_dir):
     for binaries in jsonfiles:
         jsonfile = os.path.join(root, binaries)

@@ -37,12 +37,18 @@ jsonex='.tgcfi.json' #.ifcc.json
 # addrdir = "/home/isec/Documents/experiment_6/address_dir"
 
 directory = "/home/isec/Documents/differentopdata/Reorganized_Dataset/O0/"
-binary_dir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/O0/valid_binary_list"
-json_dir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/O0/valid_json_list"
-txt_dir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/O0/TEXT_FILES"
-graphdir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/O0/graph_dir_70"
+binary_dir = "/home/isec/Documents/Reorganized_Dataset/O0/valid_binary"
+json_dir = "/home/isec/Documents/Reorganized_Dataset/O0/valid_json"
+txt_dir = "/home/isec/Documents/Reorganized_Dataset/O0/valid_callsite"
+graphdir = "/home/isec/Documents/Reorganized_Dataset/O0/O0_70"
 # graphdir = "/home/isec/Documents/experiment_6/graph_dir_60"
 addrdir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/addr_dir"
+# directory = "/home/isec/Documents/differentopdata/Reorganized_Dataset/"
+# binary_dir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/test_binary_list"
+# json_dir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/valid_json_list"
+# txt_dir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/TEXT_FILES"
+# graphdir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/graph_dir_test"
+# addrdir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/addr_dir"
 onlyCount = False #True#
 
 codenodeid = 0
@@ -54,12 +60,12 @@ Ninst_addrs = 70 # 70 80 ? #basic blcok  first nth instruction (vectors)
 g_list = []
 asmdict = {}
 naming = 0
-logfile = "dsmapping.csv"
-logf = open(os.path.join(graphdir, logfile), 'w')
+# logfile = "dsmapping.csv"
+# logf = open(os.path.join(graphdir, logfile), 'w')
 
 def savebin(filemd5, g, GT_edges, funcsave):
     global naming, logf
-    logf.write(str(naming)+','+filemd5+'\n')
+    # logf.write(str(naming)+','+filemd5+'\n')
     graph_labels = {"GT_label": th.tensor(GT_edges)}
     dgl.data.utils.save_graphs(os.path.join(graphdir, str(naming) + ".graph"), [g], graph_labels)
     with open(os.path.join(graphdir, str(naming) + ".funcaddr"), 'wb') as fp:
@@ -128,7 +134,7 @@ processed = 0
 icalls = 0
 icallsite = 0
 starttime=time.time()
-mlog = open(os.path.join(directory, "output.log"),'w')
+# mlog = open(os.path.join(directory, "output.log"),'w')
 # for accounts in os.listdir(directory):
 #     account = os.path.join(directory, accounts)
 #     #print(account)
@@ -167,6 +173,8 @@ for root, dirs, jsonfiles in os.walk(json_dir):
                 if len(tdict['tg_targets'][calllist]) != 0:
                     icallsite +=1
             if sum_targets == 0 or not os.path.isfile(binfile):
+                print(sum_targets)
+                print(os.path.isfile(binfile))
                 skipped += 1
                 continue
             icalls += sum_targets
@@ -180,7 +188,6 @@ for root, dirs, jsonfiles in os.walk(json_dir):
                 continue'''
 
             print("Processing:", binfile)
-            mlog.write(binfile+"\n")
             binstarttime = time.time()
 
             p = angr.Project(binfile, load_options={'auto_load_libs': False})

@@ -36,11 +36,12 @@ jsonex='.tgcfi.json' #.ifcc.json
 # graphdir = "/home/isec/Documents/experiment_6/graph_dir_60"
 # addrdir = "/home/isec/Documents/experiment_6/address_dir"
 
-directory = "/home/isec/Documents/differentopdata/Reorganized_Dataset/"
-binary_dir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/valid_binary_list"
-json_dir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/valid_json_list"
-txt_dir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/TEXT_FILES"
-graphdir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/graph_dir_50"
+directory = "/home/isec/Documents/differentopdata/Reorganized_Dataset/O0/"
+binary_dir = "/home/isec/Documents/Reorganized_Dataset/O1/valid_binary"
+json_dir = "/home/isec/Documents/Reorganized_Dataset/O1/valid_json"
+txt_dir = "/home/isec/Documents/Reorganized_Dataset/O1/valid_callsite"
+graphdir = "/home/isec/Documents/Reorganized_Dataset/O1/O1_70"
+# graphdir = "/home/isec/Documents/experiment_6/graph_dir_60"
 addrdir = "/home/isec/Documents/differentopdata/Reorganized_Dataset/addr_dir"
 onlyCount = False #True#
 
@@ -49,16 +50,16 @@ datanodeid = 0
 funcnodeid = 0
 addr_min = 0xffffffff
 addr_max = 0
-Ninst_addrs = 50 # 70 80 ? #basic blcok  first nth instruction (vectors)
+Ninst_addrs = 70 # 70 80 ? #basic blcok  first nth instruction (vectors)
 g_list = []
 asmdict = {}
 naming = 0
-# logfile = "dsmapping.csv"
-# logf = open(os.path.join(graphdir, logfile), 'w')
+logfile = "dsmapping.csv"
+logf = open(os.path.join(graphdir, logfile), 'w')
 
 def savebin(filemd5, g, GT_edges, funcsave):
     global naming, logf
-    # logf.write(str(naming)+','+filemd5+'\n')
+    logf.write(str(naming)+','+filemd5+'\n')
     graph_labels = {"GT_label": th.tensor(GT_edges)}
     dgl.data.utils.save_graphs(os.path.join(graphdir, str(naming) + ".graph"), [g], graph_labels)
     with open(os.path.join(graphdir, str(naming) + ".funcaddr"), 'wb') as fp:
@@ -127,14 +128,35 @@ processed = 0
 icalls = 0
 icallsite = 0
 starttime=time.time()
+# mlog = open(os.path.join(directory, "output.log"),'w')
+# for accounts in os.listdir(directory):
+#     account = os.path.join(directory, accounts)
+#     #print(account)
+#     if os.path.isdir(account):
+#         for projects in os.listdir(account):
+#             project = os.path.join(account, projects)
+#             print(project)
+#             for root, dirs, files in os.walk(project):
+#                 for binaries in files:
+#                     print(binaries)
+            # if os.path.isdir(project):
+                # print(project)
+                # for binaries in os.listdir(project):
+                    # print(binaries)
+                    # hack one?
+                    #project = "E:\\Research\\binaries\\bzar\\pandora-configbutton-pndman\\"
+                    #binaries = '00701f351379817fb432a18c4188b58fdd7180845948d1667a056a7ef773c4c8.tgcfi.json'
 for root, dirs, jsonfiles in os.walk(json_dir):
     for binaries in jsonfiles:
         jsonfile = os.path.join(root, binaries)
         print(jsonfile)
+        # if os.path.isfile(jsonfile) and jsonfile.endswith(jsonex):
+        # print(jsonfile)
         jsonraw = ''
         with open(jsonfile,'r') as f:
             jsonraw = f.read()
             tdict = json.loads(jsonraw)
+            #print(tdict)
             binary = binaries[:-len(jsonex)]
             binfile = os.path.join(binary_dir, binary)
             print(binfile)
@@ -150,14 +172,20 @@ for root, dirs, jsonfiles in os.walk(json_dir):
             icalls += sum_targets
             processed += 1
             if onlyCount == True:
+                print(2)
                 continue
 
-
+            '''if os.path.exists(os.path.join(graphdir, binaries[:-len(jsonex)] + ".funcaddr")):
+                print("Skipping", binfile)
+                continue'''
 
             print("Processing:", binfile)
+            #mlog.write(binfile+"\n")
             binstarttime = time.time()
+
             p = angr.Project(binfile, load_options={'auto_load_libs': False})
             cfg = p.analyses.CFGFast(cross_references=True)
+
             codenodes = []
             datanodes = []
             #funcnodes = []
@@ -305,6 +333,9 @@ for root, dirs, jsonfiles in os.walk(json_dir):
                 if callsite_address not in nodelookup:
                     print("Err: no callsite in nodelookup")
                     print(callsite_address)
+                    # for key in nodelookup.keys():
+                    #     print(key)
+                    # print('------------------------------------------------------------------------------')
                     continue
                 callsite = nodelookup[callsite_address]
                 #print(callsite)
@@ -321,6 +352,77 @@ for root, dirs, jsonfiles in os.walk(json_dir):
                     newedge = (callsite.id, callee.id)
                     GT_edges.append(newedge)
 
+            # Step 4: GT
+#                      funcnamei = {}
+#                      for calllist in tdict['tg_targets']:
+#                          indexn = calllist.find(' in internal ')
+#                          if indexn == -1:
+#                              indexn = calllist.find(' in ')
+#                              funcname0 = calllist[indexn + 4:]
+#                          else:
+#                              funcname0 = calllist[indexn + 13:]
+#                          norder = int(calllist[8:indexn])
+#                          indexn = funcname0.find('@')
+#                          if indexn != -1:
+#                              funcname0 = funcname0[:indexn]
+#
+#                          if funcname0 not in funclookup:
+#                              print("ERR: no func in calllist")
+#                              print(funcname0)
+#                          funcname0 = funclookup[funcname0]
+#                          if funcname0 not in icalllookup:
+#                              print("ERR: no icall in calllist")
+#                              print(funcname0)
+#                              continue
+#                          funcnamelist = icalllookup[funcname0]
+#
+#                          #order?
+#                          if funcname0 not in funcnamei:
+#                              funcnamei[funcname0] = 0
+#                              norderres = 0
+#                          else:
+#                              funcnamei[funcname0] += 1
+#                              norderres = funcnamei[funcname0]
+#
+#
+#                          l=list(funcnamelist.items())
+#                          if norderres >= l.__len__():
+#                              print("ERR: skipped norder ", calllist)
+#                              continue
+#                          l.sort()
+#                          block_addr = l[norderres][1]
+#                          node0 = nodelookup[block_addr]
+#
+#                          fcalllist = []
+#
+
+#                          for calltarget in tdict['tg_targets'][calllist]:
+#                              if calltarget not in funclookup:
+#                                  print("ERR: no func in calltarget")
+#                                  print(calltarget)
+#                                  continue
+#                              target_addr = funclookup[calltarget]
+#                              if target_addr is None:
+#                                  continue
+#                              node1 = nodelookup[target_addr]
+#                              newedge = (node0.id, node1.id)
+#                              GT_edges.append(newedge)
+#
+#                              funcaddrs = list(funclookup.values())
+#                              r = random.choice(funcaddrs)
+#                              maxtry = 0
+#                              while True:
+#                                  if maxtry<20:
+#                                      break
+#                                  elif r in calltarget or r in fcalllist:
+#                                      r = random.choice(funcaddrs)
+#                                      maxtry+=1
+#                                  else:
+#                                      fcalllist.append(r)
+#                                      break
+#
+
+
             if len(GT_edges) == 0:
                 #os.remove(jsonfile)
                 continue
@@ -334,13 +436,20 @@ for root, dirs, jsonfiles in os.walk(json_dir):
             # code func 的节点不是global unique的
             graph_data = {
                 ('code', 'code2func_edges', 'func'): code2func_edges,
-
                 ('code', 'code2code_edges', 'code'): code2code_edges,
                 ('code', 'codecall_edges', 'code'): codecall_edges,
                 ('code', 'codexrefcode_edges', 'code'): codexrefcode_edges,
                 ('code', 'codexrefdata_edges', 'data'): codexrefdata_edges,
                 ('data', 'dataxrefcode_edges', 'code'): dataxrefcode_edges,
                 ('data', 'dataxrefdata_edges', 'data'): dataxrefdata_edges,
+                #('code', 'rev_code2code_edges', 'code'): [(b,a) for a,b in code2code_edges],
+                #('code', 'rev_codecall_edges', 'code'): [(b,a) for a,b in codecall_edges],
+                #('code', 'rev_codexrefcode_edges', 'code'): [(b,a) for a,b in codexrefcode_edges],
+                #('data', 'rev_codexrefdata_edges', 'code'): [(b,a) for a,b in codexrefdata_edges],
+                #('code', 'rev_dataxrefcode_edges', 'data'): [(b,a) for a,b in dataxrefcode_edges],
+                #('data', 'rev_dataxrefdata_edges', 'data'): [(b,a) for a,b in dataxrefdata_edges],
+                #('func', 'rev_code2func_edges', 'code'): [(b,a) for a,b in code2func_edges],
+                #('code', 'GT_edges', 'code'): GT_edges,
             }
             num_nodes_dict = {'code': len(codenodes), 'data': len(datanodes), 'func': len(funcnodelookup)}
             g = dgl.heterograph(graph_data, num_nodes_dict=num_nodes_dict)

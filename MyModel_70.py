@@ -180,7 +180,7 @@ def get_one_graph(dataset, i, Adddata = True, Addfunc = True, Laplacian_pe=False
 skips = []
 
 # 处理开关
-def exp_all(epochs = 6, hidden_features = 128, inslen = 30, savePATH = '/home/isec/model/result/all', Revedges = True, Adddata = True, Addfunc = True, DataRefedgs = True, Calledges = True, CodeRefedgs = True, Laplacian_pe=False):
+def exp_all(epochs = 10, hidden_features = 128, inslen = 70, savePATH = '/home/isec/model/result/all', Revedges = True, Adddata = True, Addfunc = True, DataRefedgs = True, Calledges = True, CodeRefedgs = True, Laplacian_pe=False):
     dataset, rel_names = init_dataset(Revedges=Revedges, Adddata=Adddata, Addfunc=Addfunc, DataRefedgs = DataRefedgs, Calledges = Calledges, CodeRefedgs = CodeRefedgs, Laplacian_pe=Laplacian_pe)
     start = time.time()
     pe = 0
@@ -346,11 +346,11 @@ def exp_all(epochs = 6, hidden_features = 128, inslen = 30, savePATH = '/home/is
 if __name__ == "__main__":
     epochs = 10
     # 图过于大
-    # skips = [1870,1887,282,597,828,1061,1361]
+    skips = [644]
     hidden_features = 512
     inslen = 70
     device = th.device("cuda" if th.cuda.is_available() else "cpu")
-    exp_all(epochs = epochs, hidden_features=hidden_features, inslen = inslen,  savePATH = '/home/isec/model/compareExperiment70/allpe3',
+    exp_all(epochs = epochs, hidden_features=hidden_features, inslen = inslen,  savePATH = '/home/isec/Documents/differentopdata/Reorganized_Dataset/zenodo/src',
             Revedges = True, Adddata = True, Addfunc = True, DataRefedgs = True, Calledges = True, CodeRefedgs = True, Laplacian_pe=True)
     # exp_all(epochs = epochs, hidden_features=hidden_features, inslen = inslen,  savePATH = '/home/isec/model/resultoftotal/dataedgecoderef',
             # Revedges = False, Adddata = True, Addfunc = False, DataRefedgs = True, Calledges = False, CodeRefedgs = True, Laplacian_pe=False)
@@ -369,8 +369,8 @@ if __name__ == "__main__":
     #         Revedges = False, Adddata = False, Addfunc = False, DataRefedgs = False, Calledges = True, CodeRefedgs = False, Laplacian_pe=False)
     # exp_all(epochs = epochs, hidden_features=hidden_features, inslen = inslen, savePATH = '/home/isec/model/resultoftotal/codeRefedgs',
     #         Revedges = False, Adddata = False, Addfunc = False, DataRefedgs = False, Calledges = False, CodeRefedgs = True, Laplacian_pe=False)
-    exp_all(epochs = epochs, hidden_features=hidden_features, inslen = inslen, savePATH = '/home/isec/model/resultoftotal/allafter',
-            Revedges = True, Adddata = True, Addfunc = True, DataRefedgs = True, Calledges = True, CodeRefedgs = True, Laplacian_pe=False)
+    # exp_all(epochs = epochs, hidden_features=hidden_features, inslen = inslen, savePATH = '/home/isec/model/resultoftotal/allafter',
+    #         Revedges = True, Adddata = True, Addfunc = True, DataRefedgs = True, Calledges = True, CodeRefedgs = True, Laplacian_pe=False)
 
 
 

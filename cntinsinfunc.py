@@ -14,18 +14,20 @@ numsixtytoseventy = 0
 nummorethanseventy = 0
 cnt = 0
 i = 0
+total_functions = 0
 for root, dirs, files in os.walk(binary_dir):
     for file in files:
         print(i)
         print(cnt)
         i += 1
         binary = os.path.join(root, file)
-        try:
-            project = angr.Project(binary, auto_load_libs=False)
-            cfg = project.analyses.CFGFast()
-            for function_addr, function in cfg.kb.functions.items():
-        #         for block in function.blocks:
-        #             try:
+        # try:
+        project = angr.Project(binary, auto_load_libs=False)
+        cfg = project.analyses.CFGFast()
+        # total_functions +=len(cfg.kb.functions)
+        for function_addr, function in cfg.kb.functions.items():
+                # for block in function.blocks:
+            try:
         #                 num_instructions = block.instructions
         #                 # print(f"num_instructions: {num_instructions}")
         #                 if 0 < num_instructions < 10:
@@ -45,8 +47,8 @@ for root, dirs, files in os.walk(binary_dir):
         #                 else:
         #                     nummorethanseventy += 1
                 cnt += 1
-        except Exception as e:
-            print(f"Failed to process {binary}: {e}")
+            except Exception as e:
+                print(f"Failed to process {binary}: {e}")
 
 print(f"funcnum:{cnt}")
 # Print final counts
